@@ -20,30 +20,22 @@ def get_book_reviews(book_id):
         get_db()
         .cursor()
         .execute(
-            "SELECT stars, comment, userid FROM reviews WHERE bookid=?", (book_id,)
+            "select stars, IFNULL(displayname, username), count(likes.rowid), comment from reviews left join likes on likes.reviewid = reviews.rowid inner join users on users.rowid = reviews.userid where reviews.bookid = ? group by reviews.rowid",
+            (book_id,),
         )
         .fetchall()
     )
     if reviews == []:
         return {"error": "Book not found"}
-    data = []
-    for review in reviews:
-        stars = review[0]
-        comment = review[1]
-        userid = review[2]
-        user = (
-            get_db()
-            .cursor()
-            .execute("SELECT username, displayname FROM users WHERE rowid=?", (userid,))
-            .fetchone()
-        )
-        if user[1]:
-            name = user[1]
-        else:
-            name = user[0]
-        print(name)
-        data.append({"stars": stars, "comment": comment, "name": name})
-    return data
+    return [
+        {
+            "stars": review[0],
+            "name": review[1],
+            "likes": review[2],
+            "comment": review[3],
+        }
+        for review in reviews
+    ]
 
 
 @app.route("/book/<int:book_id>")
@@ -66,8 +58,9 @@ def get_book(book_id):
         "year": cursor[2],
         "edition": cursor[3],
         "isbn": cursor[4],
+        "reviews": get_book_reviews(book_id)
     }
- 
+
 
 @app.route("/user/<int:user_id>")
 def get_user(user_id):
@@ -93,13 +86,17 @@ def get_user(user_id):
     if user_cursor is None:
         return {"error": "Book not found"}
 
-    res=[]
-    res.append({"username": user_cursor[0],
-        "displayname": user_cursor[1]})
-    x=0;
+    res = []
+    res.append({"username": user_cursor[0], "displayname": user_cursor[1]})
+    x = 0
     while x < len(reviews_cursor):
-        res.append({'star': reviews_cursor[x][0], 'bookid': reviews_cursor[x][1], 'userid':reviews_cursor[x][2], 'comment':reviews_cursor[x][3]})
-        x+=1
+        res.append(
+            {
+                "star": reviews_cursor[x][0],
+                "bookid": reviews_cursor[x][1],
+                "userid": reviews_cursor[x][2],
+                "comment": reviews_cursor[x][3],
+            }
+        )
+        x += 1
     return res
-
-
