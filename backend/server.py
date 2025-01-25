@@ -20,7 +20,12 @@ def get_book_reviews(book_id):
         get_db()
         .cursor()
         .execute(
-            "select stars, IFNULL(displayname, username), count(likes.rowid), comment from reviews left join likes on likes.reviewid = reviews.rowid inner join users on users.rowid = reviews.userid where reviews.bookid = ? group by reviews.rowid",
+            """select stars, IFNULL(displayname, username), count(likes.rowid), comment
+            from reviews
+            left join likes on likes.reviewid = reviews.rowid
+            inner join users on users.rowid = reviews.userid
+            where reviews.bookid = ?
+            group by reviews.rowid""",
             (book_id,),
         )
         .fetchall()
