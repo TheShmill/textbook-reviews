@@ -35,3 +35,39 @@ def get_book(book_id):
         "edition": cursor[3],
         "isbn": cursor[4],
     }
+ 
+
+@app.route("/user/<int:user_id>")
+def get_user(user_id):
+    print(type(user_id))
+    user_cursor = (
+        get_db()
+        .cursor()
+        .execute(
+            "SELECT username, displayname FROM users WHERE rowid = ?",
+            (user_id,),
+        )
+        .fetchone()
+    )
+    reviews_cursor = (
+        get_db()
+        .cursor()
+        .execute(
+            "SELECT stars, bookid, userid, comment FROM reviews WHERE userid = ?",
+            (user_id,),
+        )
+        .fetchall()
+    )
+    if user_cursor is None:
+        return {"error": "Book not found"}
+
+    res=[]
+    res.append({"username": user_cursor[0],
+        "displayname": user_cursor[1]})
+    x=0;
+    while x < len(reviews_cursor):
+        res.append({'star': reviews_cursor[x][0], 'bookid': reviews_cursor[x][1], 'userid':reviews_cursor[x][2], 'comment':reviews_cursor[x][3]})
+        x+=1
+    return res
+
+
