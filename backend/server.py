@@ -26,6 +26,8 @@ def get_book(book_id):
         )
         .fetchone()
     )
+    if cursor is None:
+        return {"error": "Book not found"}
     return {
         "title": cursor[0],
         "author": cursor[1],
