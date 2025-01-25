@@ -1,4 +1,4 @@
-from flask import Flask, g
+from flask import Flask, g, request
 import sqlite3
 
 app = Flask(__name__)
@@ -12,6 +12,39 @@ def get_db():
     if db is None:
         db = g._database = sqlite3.connect("textbook-review.db")
     return db
+
+
+@app.route("/search")
+def search():
+    query = request.args.get("query")
+    hits = {}
+    for word in query.split():
+        matches = (
+            get_db()
+            .cursor()
+            .execute(
+                """
+        select rowid
+        from books
+        where title like :word
+        or edition like :word
+        or author like :word
+        or isbn like :word
+        """,
+                {"word": "%" + word + "%"},
+            )
+            .fetchall()
+        )
+        for match in matches:
+            hits[match[0]] = 1 + hits.get(match[0], 0)
+
+    results = []
+    for hit in hits.items():
+        results.append(hit)
+    results.sort(key=lambda x: x[1], reverse=True)
+    for i in range(len(results)):
+        results[i] = results[i][0]
+    return results
 
 
 @app.route("/book/<int:book_id>/reviews")
@@ -63,7 +96,7 @@ def get_book(book_id):
         "year": cursor[2],
         "edition": cursor[3],
         "isbn": cursor[4],
-        "reviews": get_book_reviews(book_id)
+        "reviews": get_book_reviews(book_id),
     }
 
 
