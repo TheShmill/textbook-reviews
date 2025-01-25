@@ -24,6 +24,8 @@ def get_book_reviews(book_id):
         )
         .fetchall()
     )
+    if reviews == []:
+        return {"error": "Book not found"}
     data = []
     for review in reviews:
         stars = review[0]
