@@ -55,7 +55,7 @@
                     <div class="book-rating">{{ book["rating"] }} ★</div>
                 </div>
                 <div class="book-info">
-                    <h3 class="book-rating">{{ book["title"] }}</h3>
+                    <h3 class="book-title">{{ book["title"] }}</h3>
                     <p class="book-author">by {{ book["author"] }}</p>
                     <p class="book-description">lorem ipsum type stuff</p>
                     <div class="book-action">
@@ -64,6 +64,8 @@
                 </div>
             </div>
             <div class="book-separator"></div>
+            {% else %}
+            <h1>No books found</h1>
             {% endfor %}
         </section>
     </div>
