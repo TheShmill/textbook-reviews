@@ -8,11 +8,17 @@ html,
 body {
   height: 100%;
   min-height: 100%;
-  margin: 0px;
+  margin: auto;
   font-family: "Mitr", sans-serif;
   line-height: 1.6;
   color: #333;
   background-color: #f4f4f4;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 /* Existing styles */
