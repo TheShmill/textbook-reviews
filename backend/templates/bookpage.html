@@ -18,11 +18,6 @@
             <div class="logo gradient-text"><a href="/">Rate My Textbook</a></div>
             <div class="profile">
                 <ul class="links">
-                    <li><a href="#">Your Reviews</a></li>
-                </ul>
-            </div>
-            <div class="profile">
-                <ul class="links">
                     {% if user is not none %}
                     <li><a href="/signout">{{ user.display }}</a></li>
                     {% else %}
@@ -97,7 +92,7 @@
         {% endif %}
     </div>
     <div class="footer">
-        <div class="footer-text">Copyright © Rate My Textbooks 2025</div>
+        <div class="footer-text">Rate My Textbooks 2025</div>
     </div>
 </body>
 
