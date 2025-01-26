@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book Name</title>
+    <title>Book Review - Rate My Textbook</title>
     <link rel="stylesheet" href="bookpage.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,21 +13,62 @@
     <div class="hero">
         <div class="header">
             <div class="logo gradient-text">Rate My Textbook</div>
-            <div class="button">
-                <div class="profile">
-                    <ul class="links">
-                        <li><a href="#"></a>Your Reviews</li>
-                    </ul>
-                </div>
+            <div class="profile">
+                <ul class="links">
+                    <li><a href="#">Your Reviews</a></li>
+                </ul>
             </div>
-            <div class="button">
-                <div class="profile">
-                    <ul class="links">
-                        <li><a href="#"></a>Profile</li>
-                    </ul>
-                    <img src="profile.png" class="profile-pic">
-                </div>
+            <div class="profile">
+                <ul class="links">
+                    <li><a href="#">Profile</a></li>
+                </ul>
+                <img src="profile.png" class="profile-pic" alt="Profile Picture">
             </div>
         </div>
+    </div>
+    <div class="main-body">
+        <div class="book-details">
+            <div class="book-cover">
+                <img src="book-thumbnail1.jpg" alt="Introduction to Computer Science" class="book-thumbnail">
+                <div class="book-rating">4.5 ★</div>
+            </div>
+            <div class="book-info">
+                <h1 class="book-title">Introduction to Computer Science</h1>
+                <p class="book-author">by John Doe</p>
+                <p class="book-description">A comprehensive introduction to the field of computer science, covering fundamental concepts and modern applications.</p>
+                <button class="rate-button">Rate this Book</button>
+            </div>
+        </div>
+        <h2 class="reviews-title">Reviews</h2>
+        <div class="reviews-container">
+            <div class="review">
+                <div class="review-header">
+                    <span class="review-author">Alice</span>
+                    <div class="review-rating">5 ★</div>
+                </div>
+                <p class="review-content">Excellent book for beginners! Clear explanations and great examples.</p>
+                <p class="review-date">March 15, 2025</p>
+            </div>
+            <div class="review">
+                <div class="review-header">
+                    <span class="review-author">Bob</span>
+                    <div class="review-rating">4 ★</div>
+                </div>
+                <p class="review-content">Very informative, but some chapters could use more depth.</p>
+                <p class="review-date">March 10, 2025</p>
+            </div>
+            <div class="review">
+                <div class="review-header">
+                    <span class="review-author">Charlie</span>
+                    <div class="review-rating">4.5 ★</div>
+                </div>
+                <p class="review-content">Great balance of theory and practical examples. Highly recommended!</p>
+                <p class="review-date">March 5, 2025</p>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        <div class="footer-text">Copyright © Rate My Textbooks 2025</div>
+    </div>
 </body>
 </html>
