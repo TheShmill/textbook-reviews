@@ -328,3 +328,9 @@ body {
 .review-container:last-child {
   border-bottom: none;
 }
+
+.book-edition {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 5px;
+}
