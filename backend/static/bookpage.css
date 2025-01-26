@@ -273,3 +273,8 @@ body {
       padding: 8px 16px;
   }
 }
+.book-edition {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 5px;
+}
