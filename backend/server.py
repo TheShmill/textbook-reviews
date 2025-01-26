@@ -30,6 +30,7 @@ def login():
 def logged_in():
     username = request.args.get("username")
     displayname = request.args.get("display")
+    url = request.args.get("url")
     user = (
         get_db()
         .cursor()
@@ -46,21 +47,28 @@ def logged_in():
         db = get_db()
         db.cursor().execute(
             """
-            INSERT INTO users VALUES (?, ?)""",
-            (username, displayname),
+            INSERT INTO users VALUES (?, ?, ?)""",
+            (username, displayname, url),
         )
         db.commit()
     resp = make_response(redirect("/"))
     resp.set_cookie("username", username)
-    resp.set_cookie("display", displayname)
+    return resp
+
+
+@app.route("/signout")
+def signout():
+    resp = make_response(redirect("/"))
+    resp.delete_cookie("username")
     return resp
 
 
 class User:
-    def __init__(self, id, user, display):
+    def __init__(self, id, user, display, pfp):
         self.id = id
         self.user = user
         self.display = display
+        self.pfp = pfp
 
 
 def user():
@@ -71,11 +79,12 @@ def user():
         get_db()
         .cursor()
         .execute(
-            "SELECT rowid, username, displayname FROM users WHERE username=?", (name,)
+            "SELECT rowid, username, displayname, profilepicture FROM users WHERE username=?",
+            (name,),
         )
         .fetchone()
     )
-    return User(user[0], user[1], user[2])
+    return User(user[0], user[1], user[2], user[3])
 
 
 @app.route("/search")

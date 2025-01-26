@@ -9,7 +9,8 @@ CREATE TABLE IF NOT EXISTS books(
 
 CREATE TABLE IF NOT EXISTS users(
     username TEXT NOT NULL UNIQUE,
-    displayname TEXT
+    displayname TEXT,
+    profilepicture TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS reviews(
