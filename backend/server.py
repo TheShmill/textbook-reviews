@@ -31,7 +31,7 @@ def search():
             .cursor()
             .execute(
                 """
-        select books.rowid, title, edition, author, avg(stars)
+        select books.rowid, title, edition, author, IFNULL(AVG(stars), "-")
         from books
         left join reviews on reviews.bookid = books.rowid
         where title like :word
@@ -70,7 +70,7 @@ def get_book_reviews(book_id):
         get_db()
         .cursor()
         .execute(
-            """select stars, IFNULL(displayname, username), count(likes.rowid), comment
+            """select stars, IFNULL(displayname, username), COUNT(likes.rowid), comment
             from reviews
             left join likes on likes.reviewid = reviews.rowid
             inner join users on users.rowid = reviews.userid
