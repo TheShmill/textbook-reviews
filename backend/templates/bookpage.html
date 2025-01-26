@@ -24,9 +24,9 @@
             <div class="profile">
                 <ul class="links">
                     {% if user is not none %}
-                    <li><a href="#">{{ user.display }}</a></li>
+                    <li><a href="/signout">{{ user.display }}</a></li>
                     {% else %}
-                    <li><a href="login">Log in</a></li>
+                    <li><a href="/login">Log in</a></li>
                     {% endif %}
                 </ul>
                 {% if user is none %}
