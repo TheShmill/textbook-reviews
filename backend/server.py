@@ -1,7 +1,9 @@
 from flask import Flask, g, request
+from jinja2 import Environment, PackageLoader, select_autoescape
 import sqlite3
 
 app = Flask(__name__)
+env = Environment(loader=PackageLoader("server"), autoescape=select_autoescape())
 
 with sqlite3.connect("textbook-review.db") as conn:
     conn.executescript(open("tables.sql").read())
@@ -12,6 +14,11 @@ def get_db():
     if db is None:
         db = g._database = sqlite3.connect("textbook-review.db")
     return db
+
+
+@app.route("/")
+def index():
+    return env.get_template("index.html").render()
 
 
 @app.route("/search")
