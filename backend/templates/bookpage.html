@@ -29,7 +29,11 @@
                         <li><a href="login">Log in</a></li>
                         {% endif %}
                 </ul>
-                <img src="profile.png" class="profile-pic" alt="Profile Picture">
+                    {% if user is none %}
+                    <img src="profile.png" class="profile-pic">
+                    {% else %}
+                    <img src="{{user.pfp}}" class="profile-pic">
+                    {% endif %}
             </div>
         </div>
     </div>
