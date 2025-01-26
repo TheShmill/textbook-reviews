@@ -1,4 +1,4 @@
-from flask import Flask, g, request
+from flask import Flask, g, request, make_response, redirect
 from jinja2 import Environment, PackageLoader, select_autoescape
 import sqlite3
 
@@ -18,7 +18,46 @@ def get_db():
 
 @app.route("/")
 def index():
-    return env.get_template("index.html").render()
+    return env.get_template("index.html").render(user=user())
+
+
+@app.route("/login")
+def login():
+    return env.get_template("login.html").render()
+
+
+@app.route("/logged-in")
+def logged_in():
+    username = request.args.get("username")
+    displayname = request.args.get("display")
+    user = (
+        get_db()
+        .cursor()
+        .execute(
+            """
+    SELECT * FROM users
+    WHERE username=?
+    """,
+            (username,),
+        )
+        .fetchone()
+    )
+    if not user:
+        db = get_db()
+        db.cursor().execute(
+            """
+            INSERT INTO users VALUES (?, ?)""",
+            (username, displayname),
+        )
+        db.commit()
+    resp = make_response(redirect("/"))
+    resp.set_cookie("username", username)
+    resp.set_cookie("display", displayname)
+    return resp
+
+
+def user():
+    return request.cookies.get("display")
 
 
 @app.route("/search")
@@ -62,7 +101,7 @@ def search():
     results.sort(key=lambda x: x[1][0], reverse=True)
     for i in range(len(results)):
         results[i] = results[i][1][1]
-    return env.get_template("searchres.html").render(books=results)
+    return env.get_template("searchres.html").render(books=results, user=user())
 
 
 def get_book_reviews(book_id):
@@ -113,6 +152,7 @@ def get_book(book_id):
     if book is None:
         return {"error": "Book not found"}
     return env.get_template("bookpage.html").render(
+        user=user(),
         title=book[0],
         author=book[1],
         year=book[2],
@@ -125,7 +165,6 @@ def get_book(book_id):
 
 @app.route("/user/<int:user_id>")
 def get_user(user_id):
-    print(type(user_id))
     user_cursor = (
         get_db()
         .cursor()
@@ -161,3 +200,7 @@ def get_user(user_id):
         )
         x += 1
     return res
+
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8000)
