@@ -31,30 +31,40 @@ def search():
             .cursor()
             .execute(
                 """
-        select rowid
+        select books.rowid, title, edition, author, avg(stars)
         from books
+        left join reviews on reviews.bookid = books.rowid
         where title like :word
         or edition like :word
         or author like :word
         or isbn like :word
+        group by books.rowid
         """,
                 {"word": "%" + word + "%"},
             )
             .fetchall()
         )
         for match in matches:
-            hits[match[0]] = 1 + hits.get(match[0], 0)
+            hits[match[0]] = (
+                1 + hits.get(match[0], [0])[0],
+                {
+                    "bookid": match[0],
+                    "title": match[1],
+                    "edition": match[2],
+                    "author": match[3],
+                    "rating": match[4],
+                },
+            )
 
     results = []
     for hit in hits.items():
         results.append(hit)
-    results.sort(key=lambda x: x[1], reverse=True)
+    results.sort(key=lambda x: x[1][0], reverse=True)
     for i in range(len(results)):
-        results[i] = results[i][0]
-    return results
+        results[i] = results[i][1][1]
+    return env.get_template("searchres.html").render(books=results)
 
 
-@app.route("/book/<int:book_id>/reviews")
 def get_book_reviews(book_id):
     reviews = (
         get_db()
@@ -85,26 +95,34 @@ def get_book_reviews(book_id):
 
 @app.route("/book/<int:book_id>")
 def get_book(book_id):
-    print(type(book_id))
-    cursor = (
+    book = (
         get_db()
         .cursor()
         .execute(
-            "SELECT title, author, year, edition, isbn FROM books WHERE rowid = ?",
+            """
+            SELECT title, author, year, edition, isbn, AVG(stars)
+            FROM books
+            LEFT JOIN reviews
+            ON books.rowid = reviews.bookid
+            WHERE books.rowid = ?
+            GROUP BY books.rowid
+            """,
             (book_id,),
         )
         .fetchone()
     )
-    if cursor is None:
+
+    if book is None:
         return {"error": "Book not found"}
-    return {
-        "title": cursor[0],
-        "author": cursor[1],
-        "year": cursor[2],
-        "edition": cursor[3],
-        "isbn": cursor[4],
-        "reviews": get_book_reviews(book_id),
-    }
+    return env.get_template("bookpage.html").render(
+        title=book[0],
+        author=book[1],
+        year=book[2],
+        edition=book[3],
+        isbn=book[4],
+        stars=book[5],
+        reviews=get_book_reviews(book_id),
+    )
 
 
 @app.route("/user/<int:user_id>")
