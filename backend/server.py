@@ -161,3 +161,12 @@ def get_user(user_id):
         )
         x += 1
     return res
+
+@app.route("/book/review")
+def new_review(user_id, stars, book_id, comment):
+    cursor=get_db().execute(
+            """
+            INSERT INTO reviews(user_id, stars, comment, book_id) 
+            VALUES (?, ?, ?, ?) 
+            """, (user_id, stars, book_id, comment)
+        )
