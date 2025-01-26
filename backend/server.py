@@ -55,7 +55,6 @@ def logged_in():
     resp.set_cookie("display", displayname)
     return resp
 
-
 def user():
     return request.cookies.get("display")
 

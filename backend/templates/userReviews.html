@@ -23,7 +23,11 @@
             <div class="button">
                 <div class="profile">
                     <ul class="links">
-                        <li><a href="#"></a>Profile</li>
+                        {% if user is not none %}
+                        <li><a href="#">{{ user }}</a></li>
+                        {% else %}
+                        <li><a href="login">Log in</a></li>
+                        {% endif %}
                     </ul>
                     <img src="profile.png" class="profile-pic">
                 </div>
