@@ -27,7 +27,7 @@
                 <div class="profile">
                     <ul class="links">
                     {% if user is not none %}
-                    <li><a href="#">{{ user }}</a></li>
+                    <li><a href="#">{{ user.display }}</a></li>
                     {% else %}
                     <li><a href="login">Log in</a></li>
                     {% endif %}

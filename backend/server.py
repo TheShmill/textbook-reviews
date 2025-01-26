@@ -55,8 +55,27 @@ def logged_in():
     resp.set_cookie("display", displayname)
     return resp
 
+
+class User:
+    def __init__(self, id, user, display):
+        self.id = id
+        self.user = user
+        self.display = display
+
+
 def user():
-    return request.cookies.get("display")
+    name = request.cookies.get("username")
+    if name is None:
+        return None
+    user = (
+        get_db()
+        .cursor()
+        .execute(
+            "SELECT rowid, username, displayname FROM users WHERE username=?", (name,)
+        )
+        .fetchone()
+    )
+    return User(user[0], user[1], user[2])
 
 
 @app.route("/search")
