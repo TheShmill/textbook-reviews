@@ -80,8 +80,6 @@ def get_book_reviews(book_id):
         )
         .fetchall()
     )
-    if reviews == []:
-        return {"error": "Book not found"}
     return [
         {
             "stars": review[0],
