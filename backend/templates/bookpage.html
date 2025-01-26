@@ -64,13 +64,37 @@
                     <span class="review-author">{{ review["name"] }}</span>
                     <div class="review-rating">{{ review["stars"] }} ★</div>
                 </div>
-                <p class="review-content">Excellent book for beginners! Clear explanations and great examples.</p>
+                {% if review["comment"] is not none %}
+                <p class="review-content">{{ review["comment"] }}</p>
+                {% endif %}
                 <p class="review-date">March 15, 2025</p>
             </div>
             {% else %}
             <h1>No reviews yet</h1>
             {% endfor %}
         </div>
+        {% if user is not none %}
+        <div>
+            <form action="/book/{{ bookid }}/review">
+                <input id="1" name="stars" type="radio" value="1" required>
+                <label for="1">1</label>
+                <input id="2" name="stars" type="radio" value="2">
+                <label for="2">2</label>
+                <input id="3" name="stars" type="radio" value="3">
+                <label for="3">3</label>
+                <input id="4" name="stars" type="radio" value="4">
+                <label for="4">4</label>
+                <input id="5" name="stars" type="radio" value="5" checked>
+                <label for="5">5</label>
+                <input style="width: 100%; height: 100px;" name="comment" type="text">
+                <br>
+                <input class="rate-button" type="submit">
+            </form>
+            </form>
+        </div>
+        {% else %}
+        <a href="/login"><button>Login to leave a review</button></a>
+        {% endif %}
     </div>
     <div class="footer">
         <div class="footer-text">Copyright © Rate My Textbooks 2025</div>

@@ -164,7 +164,7 @@ def get_book(book_id):
         .cursor()
         .execute(
             """
-            SELECT title, author, year, edition, isbn, AVG(stars)
+            SELECT title, author, year, edition, isbn, AVG(stars), books.rowid
             FROM books
             LEFT JOIN reviews
             ON books.rowid = reviews.bookid
@@ -180,6 +180,7 @@ def get_book(book_id):
         return {"error": "Book not found"}
     return env.get_template("bookpage.html").render(
         user=user(),
+        bookid=book_id,
         title=book[0],
         author=book[1],
         year=book[2],
@@ -228,17 +229,24 @@ def get_user(user_id):
         x += 1
     return res
 
-@app.route("/book/review/")
-def new_review(user_id, stars, book_id, comment):
-    cursor=get_db().execute(
-            """
-            INSERT INTO reviews(user_id, stars, comment, book_id) 
+
+@app.route("/book/<int:book_id>/review/")
+def new_review(book_id):
+    stars = int(request.args.get("stars"))
+    comment = request.args.get("comment")
+    if comment == "":
+        comment = None
+    print(stars, comment.__repr__())
+    cursor = get_db().execute(
+        """
+            INSERT INTO reviews(userid, stars, bookid, comment)
             VALUES (?, ?, ?, ?) 
-            """, (user_id, stars, book_id, comment)
-        )
+            """,
+        (user().id, stars, book_id, comment),
+    )
+    get_db().commit()
     return redirect(f"/book/{book_id}")
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000)
-
-
