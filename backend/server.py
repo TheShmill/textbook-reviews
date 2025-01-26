@@ -54,6 +54,12 @@ def logged_in():
     resp = make_response(redirect("/"))
     resp.set_cookie("username", username)
     return resp
+
+
+@app.route("/signout")
+def signout():
+    resp = make_response(redirect("/"))
+    resp.delete_cookie("username")
     return resp
 
 
